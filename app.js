@@ -96,7 +96,7 @@ app.use((err, req, res, next) => {
 })
 
 app.listen(PORT, () => {
-  console.log(`express server running at https://picapi.hxq-001.top,${PORT}`);
+  console.log(`express server running at 127.0.0.1,${PORT}`);
 });
 // 200 OK: 请求成功
 // 201 Created: 创建资源成功

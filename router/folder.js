@@ -11,11 +11,11 @@ export const checkPathMd = async (req,res,next) => {
 
   // 检查根路径
   const resultPathRoot = checkPath.checkPathRoot(folder)
-  if(!resultPathRoot.isLegal) return res.err('非法路径1');
+  if(!resultPathRoot.isLegal) return res.err('非法路径');
 
   // 检查路径是否包含子目录
   const resultChild = checkPath.checkPathChild(resultPathRoot.resolvedPath)
-  if(resultChild) return res.err('非法路径2');
+  if(resultChild) return res.err('非法路径');
 
   next()
 }

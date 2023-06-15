@@ -173,8 +173,10 @@ const renameFile = async (req,res) => {
   }
 }
 
+let returnNum = 0
 // 随机返回一张图
 const randomImg = async (req,res) => {
+  returnNum++
   try {
     const folder = await getAllSubdirectories(baseUploadsPath);
     const randomIndexFolder = getRandomInt(0, folder.length - 1)
@@ -182,7 +184,14 @@ const randomImg = async (req,res) => {
 
     const files = await getFilesInDirectory(`${baseUploadsPath}/${randomValueFolder}`)
     // 防止目录中没有文件,递归调用
-    if (files.length === 0) return randomImg(req,res)
+    if (files.length === 0) {
+      console.log(returnNum);
+      if(returnNum > 10) {
+        return res.err('获取失败')
+      } else {
+        return randomImg(req,res)
+      }
+    }
     
     const randomIndexFile = getRandomInt(0, files.length - 1)
     const randomValueFile = `${SERVER_ADDRESS}/${randomValueFolder}/${files[randomIndexFile]}`
@@ -193,7 +202,7 @@ const randomImg = async (req,res) => {
     })
     
   } catch (error) {
-    res.err('获取随机图失败')
+    res.err('获取失败')
   }
 }
 // /^http/.test

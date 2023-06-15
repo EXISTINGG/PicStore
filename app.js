@@ -1,20 +1,3 @@
-/*
-  版权声明：
-  项目名称：图床项目
-  作者：Existing
-  创建日期：2023.6.9
-
-  版权所有 (C) 2023 Existing
-
-  本项目受法律保护，仅供个人学习和使用。未经作者明确授权，禁止进行复制、修改、发布、分发或商业使用等任何形式的非法传播和使用。
-
-  如果您对本项目感兴趣，欢迎在遵守相关法律的前提下进行学习和使用，并尊重作者的知识产权。
-
-  有关详细的许可信息和使用条款，请参阅项目根目录下的 LICENSE 文件。
-
-  如有任何问题或建议，请联系作者：https://github.com/EXISTINGG
-*/
-
 import express from 'express'
 // import multer from 'multer'; // 文件上传中间件
 import cors from 'cors' // cors中间件
@@ -23,6 +6,7 @@ import folderRouter from './router/folder.js'
 // import checkPath from './utils/checkPath.js'
 
 export const SERVER_ADDRESS = '127.0.0.1' // 服务器地址
+const PORT = process.env.PORT || 80; // 端口地址(Render部署随机分配)
 
 const app = express();
 
@@ -86,6 +70,7 @@ app.use((req, res, next) => {
 
 
 // 挂载路由
+app.use('/',(res,req) => {res.send(`express server running at https://picapi.hxq-001.top,${PORT}`)})
 app.use('/file',fileRouter)
 app.use('/folder',folderRouter)
 
@@ -107,7 +92,7 @@ app.use((err, req, res, next) => {
   res.err(err)
 })
 
-app.listen(80, () => {
+app.listen(PORT, () => {
   console.log('express server running at http://127.0.0.1');
 });
 // 200 OK: 请求成功

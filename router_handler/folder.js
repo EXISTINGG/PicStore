@@ -77,7 +77,9 @@ const addFolder = async (req,res) => {
       const resultCheck = await checkFolderExists(folderName)
       if (resultCheck.res) return res.err('目录已存在')
 
-      await fs.mkdir(resultPath.resolvedPath, { recursive: false }); // recursive,true:没有上级目录则上级目录一起创建,flase:没有上级目录,不创建文件
+      // 获取绝对路径
+      const resultPathRootOld = checkPath.checkPathRoot(folderName)
+      await fs.mkdir(resultPathRootOld.resolvedPath, { recursive: false }); // recursive,true:没有上级目录则上级目录一起创建,flase:没有上级目录,不创建文件
 
       res.send({
         status: 200,

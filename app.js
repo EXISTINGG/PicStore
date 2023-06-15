@@ -12,7 +12,7 @@ const app = express();
 const router = new express.Router()
 
 // 托管静态资源,将uploads目录下的文件对外开放
-app.use(express.static('uploads'));
+app.use(express.static('uploads'))
 
 //在路由之前配置解析
 //配置解析表单数据中间件 注意: 只能解析 application/x-www-form-urlencoded 格式的表单数据
@@ -94,7 +94,7 @@ app.use((err, req, res, next) => {
   res.err(err)
 })
 
-app.listen(90, () => {
+app.listen(80, () => {
   console.log(`express server running at 127.0.0.1`);
 });
 // 200 OK: 请求成功

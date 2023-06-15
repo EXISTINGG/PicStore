@@ -70,7 +70,7 @@ app.use((req, res, next) => {
 
 
 // 挂载路由
-app.use('/',(res,req) => {res.send(`express server running at https://picapi.hxq-001.top,${PORT}`)})
+app.use('/',(req,res) => {res.send(`express server running at https://picapi.hxq-001.top,${PORT}`)})
 app.use('/file',fileRouter)
 app.use('/folder',folderRouter)
 

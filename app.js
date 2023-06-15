@@ -10,6 +10,8 @@ const PORT = process.env.PORT || 80; // 端口地址(Render部署随机分配)
 
 const app = express();
 
+const router = new express.Router()
+
 // 托管静态资源,将uploads目录下的文件对外开放
 app.use(express.static('uploads'));
 
@@ -69,8 +71,9 @@ app.use((req, res, next) => {
 
 
 
+
 // 挂载路由
-app.use('/',(req,res) => {res.send(`express server running at https://picapi.hxq-001.top,${PORT}`)})
+app.use(router.get('/',(req,res) => res.send(`express server running at https://picapi.hxq-001.top,${PORT}`)))
 app.use('/file',fileRouter)
 app.use('/folder',folderRouter)
 

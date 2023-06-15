@@ -6,7 +6,6 @@ import folderRouter from './router/folder.js'
 // import checkPath from './utils/checkPath.js'
 
 export const SERVER_ADDRESS = '127.0.0.1' // 服务器地址
-const PORT = process.env.PORT || 80; // 端口地址(Render部署随机分配)
 
 const app = express();
 
@@ -73,7 +72,7 @@ app.use((req, res, next) => {
 
 
 // 挂载路由
-app.use(router.get('/',(req,res) => res.send(`express server running at https://picapi.hxq-001.top,${PORT}`)))
+app.use(router.get('/',(req,res) => res.send(`express server running at https://picapi.hxq-001.top`)))
 app.use('/file',fileRouter)
 app.use('/folder',folderRouter)
 
@@ -95,8 +94,8 @@ app.use((err, req, res, next) => {
   res.err(err)
 })
 
-app.listen(PORT, () => {
-  console.log(`express server running at 127.0.0.1,${PORT}`);
+app.listen(90, () => {
+  console.log(`express server running at 127.0.0.1`);
 });
 // 200 OK: 请求成功
 // 201 Created: 创建资源成功

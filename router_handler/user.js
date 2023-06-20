@@ -3,8 +3,7 @@ import bcrypt from 'bcryptjs'  // 使用 bcryptjs 对用户密码进行加密
 import jwt  from 'jsonwebtoken' // 生成 Token 字符串
 import nodemailer from 'nodemailer'
 import config  from '../config.js'
-import dotenv from 'dotenv'
-dotenv.config();
+import 'dotenv/config'
 
 const user = process.env.EMAIL_USER;
 const pass = process.env.EMAIL_PASS;

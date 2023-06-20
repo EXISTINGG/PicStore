@@ -1,5 +1,6 @@
 import mysql from 'mysql2'
 import 'dotenv/config'
+console.log(process.env);
 
 const host = process.env.DB_HOST;
 const port = process.env.DB_PORT;

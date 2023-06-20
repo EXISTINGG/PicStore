@@ -1,8 +1,14 @@
 import express from 'express'
 // import multer from 'multer'; // 文件上传中间件
 import cors from 'cors' // cors中间件
+import Joi from 'joi'
+import expressJWT from 'express-jwt' // 解析token中间件
+import config from './config.js' // 配置数据
 import fileRouter from './router/file.js'
 import folderRouter from './router/folder.js'
+import userRouter from './router/user.js'
+import userinfoRouter from './router/userinfo.js'
+import adminRouter from './router/admin.js'
 // import checkPath from './utils/checkPath.js'
 
 export const SERVER_ADDRESS = '127.0.0.1' // 服务器地址
@@ -17,10 +23,12 @@ app.use(express.static('uploads'))
 //在路由之前配置解析
 //配置解析表单数据中间件 注意: 只能解析 application/x-www-form-urlencoded 格式的表单数据
 app.use(express.urlencoded({extended: false}))
+app.use(express.json());
 
 //解决跨域问题,在路由之前,配置cors
 app.use(cors())
 
+//#region 
 // 配置 multer 中间件 dest:'./tempfile'表示创建临时文件夹
 // const upload = multer({ dest: './tempfile' });
 
@@ -50,8 +58,7 @@ app.use(cors())
 //     msg: 'ok'
 //   });
 // })
-
-
+//#endregion
 
 
 
@@ -67,7 +74,10 @@ app.use((req, res, next) => {
   next()
 })
 
-
+//在路由之前,配置解析token中间件
+//使用 .unless指定哪些接口不需要进行 Token 的身份认证
+// 注册将 JWT 字符串解析还原成 JSON 对象的中间件
+app.use(expressJWT.expressjwt({ secret: config.jwtSecretKey, algorithms: ["HS256"]}).unless({ path: [/\/api\//g, /^\/$/] }))
 
 
 
@@ -75,16 +85,20 @@ app.use((req, res, next) => {
 app.use(router.get('/',(req,res) => res.send(`express server running at https://picapi.hxq-001.top`)))
 app.use('/file',fileRouter)
 app.use('/folder',folderRouter)
+app.use('/api/user',userRouter)
+app.use('/userinfo',userinfoRouter)
+app.use('/admin',adminRouter)
 
 
 // 全局错误级别中间件中，捕获验证失败的错误，并把验证失败的结果响应给客户端：
 // 错误中间件
 app.use((err, req, res, next) => {
+  console.log(err);
   // 数据验证失败
-  // if (err instanceof joi.ValidationError) return res.err(err)
+  if (err instanceof Joi.ValidationError) return res.err(err)
 
   // 捕获身份认证失败的错误
-  // if (err.name === 'UnauthorizedError') return res.err('身份认证失败！')
+  if (err.name === 'UnauthorizedError') return res.err('身份认证失败',401)
 
   if (err.code === 'LIMIT_UNEXPECTED_FILE') return res.err('文件数量超过限制');
   

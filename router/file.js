@@ -1,6 +1,6 @@
 import express from 'express';
 import multer from 'multer'; // 文件上传中间件
-import {checkPathMd} from './folder.js' // 导入检查路径合法性中间件
+import {checkPathMd,checkPowerMd} from './folder.js' // 导入检查路径合法性中间件
 import fileHandle from '../router_handler/file.js'
 
 const router = new express.Router()
@@ -21,13 +21,13 @@ const fileFilter = (req, file, cb) => {
 // 配置 multer 中间件 dest:'./tempfile'表示创建临时文件夹, 最大20M
 const upload = multer({ dest: './tempfile', limits: {fileSize: LIMIT_FILE_SIZE}, fileFilter });
 // file是上传的字段
-router.post('/upload',upload.single('file'),fileHandle.uploadFile)
+router.post('/upload',checkPowerMd,upload.single('file'),fileHandle.uploadFile)
 // 最大限制为10个
-router.post('/uploads',upload.array('files', LIMIT_UNEXPECTED_FILE), fileHandle.uploadFiles)
+router.post('/uploads',checkPowerMd,upload.array('files', LIMIT_UNEXPECTED_FILE), fileHandle.uploadFiles)
 // http链接上传,支持批量最大为10,链接形式暂不受大小限制
-router.post('/urlfile',checkPathMd, fileHandle.processFiles)
-router.post('/deletefile',checkPathMd,fileHandle.deleteFile)
-router.post('/renamefile', fileHandle.renameFile)
-router.get('/randomimg', fileHandle.randomImg)
+router.post('/urlfile',checkPowerMd,checkPathMd, fileHandle.processFiles)
+router.post('/deletefile',checkPowerMd,checkPathMd,fileHandle.deleteFile)
+router.post('/renamefile',checkPowerMd, fileHandle.renameFile)
+router.get('/api/randomimg', fileHandle.randomImg)
 
 export default router

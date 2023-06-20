@@ -11,12 +11,19 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@escook/express-joi": "^1.1.1",
     "axios": "^1.4.0",
+    "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "express": "^4.18.2",
+    "express-jwt": "^8.4.1",
     "file-type": "^18.5.0",
     "fs-extra": "^11.1.1",
+    "joi": "^17.9.2",
+    "jsonwebtoken": "^9.0.0",
     "multer": "^1.4.5-lts.1",
+    "mysql2": "^3.3.5",
+    "nodemailer": "^6.9.3",
     "then-fs": "^2.0.0"
   },
   "description": ""

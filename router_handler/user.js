@@ -32,7 +32,7 @@ const registerUser = async (req,res) => {
   try {
     const querySql = `select * from user where username = ? or email = ?`
     // 将结果解构出来
-    const [queryRes] = await db.query(querySql, username, email)
+    const [queryRes] = await db.query(querySql, [username, email])
     // 用户名是否存在
     if(queryRes.length > 0) return res.err('注册失败：用户名或邮箱已被注册')
 

@@ -3,6 +3,11 @@ import bcrypt from 'bcryptjs'  // 使用 bcryptjs 对用户密码进行加密
 import jwt  from 'jsonwebtoken' // 生成 Token 字符串
 import nodemailer from 'nodemailer'
 import config  from '../config.js'
+import dotenv from 'dotenv'
+dotenv.config();
+
+const user = process.env.EMAIL_USER;
+const pass = process.env.EMAIL_PASS;
 
 // 注册账号,验证验证码
 const registerUser = async (req,res) => {
@@ -75,7 +80,7 @@ const loginAccount = async (req,res) => {
       [queryRes] = await db.query(queryEmailSql, email);
     }
     // 执行 SQL 语句成功，但是查询到数据条数不等于 1
-    if (queryRes.length !== 1) return res.err('登入失败')
+    if (queryRes.length !== 1) return res.err('登录失败')
 
     // 如果是登录管理界面
     if(isadmin) {
@@ -90,7 +95,7 @@ const loginAccount = async (req,res) => {
     // 调用 bcrypt.compareSync(用户提交的密码, 数据库中的密码) 方法比较密码是否一致
     const compareResult = bcrypt.compareSync(password, queryRes[0].password)
     // 如果对比的结果等于 false, 则证明用户输入的密码错误
-    if (!compareResult) return res.err('登入失败')
+    if (!compareResult) return res.err('登录失败')
     
     // 快速剔除 密码(敏感信息)
     delete queryRes[0].password
@@ -99,7 +104,7 @@ const loginAccount = async (req,res) => {
     const tokenStr = jwt.sign(user, config.jwtSecretKey, {expiresIn: config.expiresIn})
     res.send({
       status: 200,
-      message: '登陆成功',
+      message: '登录成功',
       data: {
         token: 'Bearer ' + tokenStr,
         user
@@ -107,7 +112,7 @@ const loginAccount = async (req,res) => {
     })
   } catch (error) {
     console.log(error);
-    res.err('登陆失败')
+    res.err('登录失败')
   }
 }
 
@@ -117,8 +122,10 @@ const transport = nodemailer.createTransport({
   secureConnection: true, // 使用 SSL进行加密
   port: 465, // SMTP的端口号
   auth: {
-    user: 'existingpicstore@qq.com', // 发送邮件的邮箱
-    pass: 'mnzowyyqvazndejf', // 邮箱密码或授权码
+    // user: 'existingpicstore@qq.com', // 发送邮件的邮箱
+    // pass: 'mnzowyyqvazndejf', // 邮箱密码或授权码
+    user,
+    pass
   },
 });
 

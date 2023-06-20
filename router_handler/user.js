@@ -2,11 +2,12 @@ import db from '../db/index.js'
 import bcrypt from 'bcryptjs'  // 使用 bcryptjs 对用户密码进行加密
 import jwt  from 'jsonwebtoken' // 生成 Token 字符串
 import nodemailer from 'nodemailer'
-import config  from '../config.js'
 import 'dotenv/config'
 
 const user = process.env.EMAIL_USER;
 const pass = process.env.EMAIL_PASS;
+const jwtSecretKey = process.env.JWT_SECRETKEY
+const expiresIn = process.env.TOKEN_EXPIRESIN
 
 // 注册账号,验证验证码
 const registerUser = async (req,res) => {
@@ -100,7 +101,7 @@ const loginAccount = async (req,res) => {
     delete queryRes[0].password
     const user = queryRes[0]
     // 生成 Token 字符串
-    const tokenStr = jwt.sign(user, config.jwtSecretKey, {expiresIn: config.expiresIn})
+    const tokenStr = jwt.sign(user, jwtSecretKey, {expiresIn})
     res.send({
       status: 200,
       message: '登录成功',
@@ -121,8 +122,6 @@ const transport = nodemailer.createTransport({
   secureConnection: true, // 使用 SSL进行加密
   port: 465, // SMTP的端口号
   auth: {
-    // user: 'existingpicstore@qq.com', // 发送邮件的邮箱
-    // pass: 'mnzowyyqvazndejf', // 邮箱密码或授权码
     user,
     pass
   },

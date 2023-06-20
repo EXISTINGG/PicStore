@@ -3,15 +3,17 @@ import express from 'express'
 import cors from 'cors' // cors中间件
 import Joi from 'joi'
 import expressJWT from 'express-jwt' // 解析token中间件
-import config from './config.js' // 配置数据
 import fileRouter from './router/file.js'
 import folderRouter from './router/folder.js'
 import userRouter from './router/user.js'
 import userinfoRouter from './router/userinfo.js'
 import adminRouter from './router/admin.js'
 // import checkPath from './utils/checkPath.js'
+import 'dotenv/config'
+const jwtSecretKey = process.env.JWT_SECRETKEY
 
-export const SERVER_ADDRESS = '127.0.0.1' // 服务器地址
+
+export const SERVER_ADDRESS = 'https://picapi.hxq-001.top' // 服务器地址
 
 const app = express();
 
@@ -77,7 +79,7 @@ app.use((req, res, next) => {
 //在路由之前,配置解析token中间件
 //使用 .unless指定哪些接口不需要进行 Token 的身份认证
 // 注册将 JWT 字符串解析还原成 JSON 对象的中间件
-app.use(expressJWT.expressjwt({ secret: config.jwtSecretKey, algorithms: ["HS256"]}).unless({ path: [/\/api\//g, /^\/$/] }))
+app.use(expressJWT.expressjwt({ secret: jwtSecretKey, algorithms: ["HS256"]}).unless({ path: [/\/api\//g, /^\/$/] }))
 
 
 
@@ -109,7 +111,7 @@ app.use((err, req, res, next) => {
 })
 
 app.listen(80, () => {
-  console.log(`express server running at 127.0.0.1`);
+  console.log(`express server running at https://picapi.hxq-001.top`);
 });
 // 200 OK: 请求成功
 // 201 Created: 创建资源成功

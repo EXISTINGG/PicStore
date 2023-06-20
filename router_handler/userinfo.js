@@ -1,7 +1,10 @@
 import db from '../db/index.js'
 import bcrypt from 'bcryptjs'
 import jwt  from 'jsonwebtoken' // 生成 Token 字符串
-import config  from '../config.js'
+import 'dotenv/config'
+const jwtSecretKey = process.env.JWT_SECRETKEY
+const expiresIn = process.env.TOKEN_EXPIRESIN
+
 
 // 更新用户信息
 const updateUserinfo = async (req,res) => {
@@ -57,7 +60,7 @@ const updatePassword = async (req, res) => {
     delete updateQueryRes[0].password
     const user = updateQueryRes[0]
     // 生成 Token 字符串
-    const tokenStr = jwt.sign(user, config.jwtSecretKey, {expiresIn: config.expiresIn})
+    const tokenStr = jwt.sign(user, jwtSecretKey, {expiresIn})
 
     res.send({
       status: 200,

@@ -68,6 +68,7 @@ const updatePower = async (req,res) => {
     const [queryRes] = await db.query(querySql,[username,id])
     // 如果不是超级管理员
     if(queryRes[0].power != 1) return res.err('你无权进行此操作',403)
+    if(queryRes[0].power == 1 && setPower != 1) return res.err('超级管理员不可降级',403)
 
     const setPowerSql = 'update user set power = ? where username = ? and id = ?'
     const [setPowerRes] = await db.query(setPowerSql,[setPower,setUserName,setId])

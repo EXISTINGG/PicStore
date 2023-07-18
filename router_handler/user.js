@@ -36,6 +36,8 @@ const registerUser = async (req,res) => {
   
   try {
     const querySql = `select * from user where username = ? or email = ?`
+    // 用户注销账号后，如果没有及时删除数据库的数据，会占用用户名和邮箱，即使其状态为1（已注销）。
+    // const querySql = `select * from user where (username = ? or email = ?) and status = "1"`
     // 将结果解构出来
     const [queryRes] = await db.query(querySql, [username, email])
     // 用户名是否存在
@@ -163,25 +165,41 @@ const sendCode = (req, res) => {
     `,
   };
 
-  // 发送邮件
-  transport.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      console.log(error);
-      res.status(500).send('邮件发送失败');
-    } else {
-      console.log(`验证码已发送至${email}`);
-      codeMap[email] = code; // 存储验证码，以邮箱为键
-      console.log(1, codeMap[email]); // 添加此行，验证验证码是否正确存储
-      res.status(200).send('验证码已发送');
-    }
-  });
+  // // 发送邮件
+  // transport.sendMail(mailOptions, (error, info) => {
+  //   if (error) {
+  //     console.log(error);
+  //     res.status(500).send('邮件发送失败');
+  //   } else {
+  //     console.log(`验证码已发送至${email}`);
+  //     codeMap[email] = code; // 存储验证码，以邮箱为键
+  //     console.log(1, codeMap[email]); // 添加此行，验证验证码是否正确存储
+  //     res.status(200).send('验证码已发送');
+  //   }
+  // });
+
+  sendMail(mailOptions,email,code,res);
+}
+
+const sendMail = (mailOptions,email,code,res) => {
+    // 发送邮件
+    transport.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.log(error);
+        res.status(500).send('邮件发送失败');
+      } else {
+        console.log(`验证码已发送至${email}`);
+        codeMap[email] = code; // 存储验证码，以邮箱为键
+        console.log(1, codeMap[email]); // 添加此行，验证验证码是否正确存储
+        res.status(200).send('验证码已发送');
+      }
+    });
 }
 
 export default {
   registerUser,
   loginAccount,
   sendCode,
-  
 }
 
 

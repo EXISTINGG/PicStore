@@ -7,6 +7,8 @@ import checkPath from '../utils/checkPath.js'
 import {SERVER_ADDRESS} from '../app.js'
 import {LIMIT_UNEXPECTED_FILE} from '../router/file.js'
 
+const staticFolder = 'uploads'
+
 // 文件上传处理
 const uploadFile = async (req,res) => {
   const timestamp = Date.now(); // 获取当前时间戳 
@@ -76,8 +78,10 @@ const uploadFiles = async (req, res) => {
 
   try {
     const resultFile = await checkFolderExists(folder)
+    
     if(resultFile.res) {
       const resultImg = await writeMultipleFiles(folder,files,timestamp);
+
       const errUrl = resultImg.errUrl
       if(errUrl.length === 0 && resultImg.res) {
         return res.send({
@@ -97,7 +101,7 @@ const uploadFiles = async (req, res) => {
           }
         });
       } else {
-        res.err(resultImg.msg)
+        // res.err(resultImg.msg)
         res.send({
           status: 400,
           message: resultImg.msg,
@@ -132,7 +136,7 @@ const deleteFile = async (req,res) => {
   }
 }
 
-// 重命名文件处理
+// 重命名文件处理(重复文件会覆盖)
 const renameFile = async (req,res) => {
   const folder = req.body.folder
   const oldName = req.body.oldName
@@ -194,7 +198,7 @@ const randomImg = async (req,res) => {
     }
     
     const randomIndexFile = getRandomInt(0, files.length - 1)
-    const randomValueFile = `${SERVER_ADDRESS}/${randomValueFolder}/${files[randomIndexFile]}`
+    const randomValueFile = `${SERVER_ADDRESS}/${staticFolder}/${randomValueFolder}/${files[randomIndexFile]}`
     console.log(randomValueFile);
     res.send({
       status: 200,
@@ -242,7 +246,7 @@ const processFiles = async (req,res) => {
         continue;
       }
 
-      const fileAddress = `${SERVER_ADDRESS}/${req.body.folder}/${resultAxios.imageName}`;
+      const fileAddress = `${SERVER_ADDRESS}/${staticFolder}/${req.body.folder}/${resultAxios.imageName}`;
       fileAddresses.push(fileAddress);
     }
     if(failedFiles.length === 0) {
@@ -289,19 +293,21 @@ export const checkFolderExists = async (folder) => {
 // 2写入文件
 const transferFile = async (folder,file,timestamp) => {
   let errUrl
+  // 去除文件名的所有空格
+  const filename = file.originalname.replace(/\s/g, "")
   try {
-    await fs.writeFile(`${baseUploadsPath}/${folder}/${timestamp}${file.originalname}`,await fs.readFile(file.path));
+    await fs.writeFile(`${baseUploadsPath}/${folder}/${timestamp}${filename}`,await fs.readFile(file.path));
 
     // 删除缓存文件(临时的二进制文件)
     await fs.unlink(file.path)
 
     // 检测文件的类型
-    const resultType = await detectedType(folder,`${timestamp}${file.originalname}`,file.originalname)
+    const resultType = await detectedType(folder,`${timestamp}${filename}`,filename)
     if(!resultType.isImg) {
       errUrl = resultType.url
       return {res: false, msg: '写入文件时出错', errUrl}
     }
-    return {res: true, url: `${SERVER_ADDRESS}/${folder}/${timestamp}${file.originalname}`}
+    return {res: true, url: `${SERVER_ADDRESS}/${staticFolder}/${folder}/${timestamp}${filename}`}
   } catch (err) {
     return {res: false, msg: '写入文件时出错', errUrl}
   } 
@@ -315,19 +321,25 @@ const writeMultipleFiles = async (folder, fileList, timestamp) => {
 
   for (const file of fileList) {
     try {
-      await fs.writeFile(`./uploads/${folder}/${timestamp}${file.originalname}`, await fs.readFile(file.path));
+      // 去除文件名的所有空格
+      const filename = file.originalname.replace(/\s/g, "")
+      // console.log(111,filename);
+      // console.log(232,file.originalname);
+
+      // 读取文件的位置，写入文件
+      await fs.writeFile(`./uploads/${folder}/${timestamp}${filename}`, await fs.readFile(file.path));
 
       // 删除缓存文件(临时的二进制文件)
       await fs.unlink(file.path);
 
       // 检测文件的类型
-      const resultType = await detectedType(folder,`${timestamp}${file.originalname}`,file.originalname)
+      const resultType = await detectedType(folder,`${timestamp}${filename}`,filename)
       if(!resultType.isImg) {
         failedFiles.push(resultType.url);
         continue;
       }
 
-      const fileAddress = `${SERVER_ADDRESS}/${folder}/${timestamp}${file.originalname}`;
+      const fileAddress = `${SERVER_ADDRESS}/${staticFolder}/${folder}/${timestamp}${filename}`;
       fileAddresses.push(fileAddress);
       isSuccess = true
     } catch (error) {
@@ -335,7 +347,16 @@ const writeMultipleFiles = async (folder, fileList, timestamp) => {
       return {res: false, msg: '写入文件时出错', errUrl: failedFiles}
     }
   }
-  if (isSuccess) return {res: true, url: fileAddresses, errUrl: failedFiles};
+
+  if (isSuccess) {
+    if (failedFiles.length === 0) {
+      return {res: true, url: fileAddresses, errUrl: []}
+    } else {
+      return {res: true, url: fileAddresses, errUrl: failedFiles}
+    }
+  } else {
+    return {res: false, msg: '写入文件时出错', errUrl: failedFiles}
+  }
 }
 
 // 获取随机数据

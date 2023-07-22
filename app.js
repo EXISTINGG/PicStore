@@ -103,7 +103,12 @@ app.use('/admin',adminRouter)
  */
 // 处理 404 - 资源未找到，主要针对静态资源
 app.use((req, res, next) => {
-  if (!res.headersSent) return res.err('所请求的资源不存在',404)
+  const url = req.url
+  if(/\/uploads\/.*/.test(url)) {
+    if (!res.headersSent) return res.err('所请求的资源不存在',404)
+  } else {
+    next()
+  }
 });
 
 // 全局错误级别中间件中，捕获验证失败的错误，并把验证失败的结果响应给客户端

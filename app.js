@@ -13,7 +13,7 @@ import 'dotenv/config'
 const jwtSecretKey = process.env.JWT_SECRETKEY
 
 
-export const SERVER_ADDRESS = 'https://picapi.hxq-001.top' // 服务器地址
+export const SERVER_ADDRESS = process.env.SERVER_ADDRESS // 服务器地址
 
 const app = express();
 
@@ -89,7 +89,7 @@ app.use(expressJWT.expressjwt({ secret: jwtSecretKey, algorithms: ["HS256"]}).un
 
 
 // 挂载路由
-app.use(router.get('/',(req,res) => res.send(`express server running at https://picapi.hxq-001.top`)))
+app.use(router.get('/',(req,res) => res.send(`express server running at ${SERVER_ADDRESS}`)))
 app.use('/file',fileRouter)
 app.use('/folder',folderRouter)
 app.use('/api/user',userRouter)
@@ -135,7 +135,7 @@ app.use((err, req, res, next) => {
 })
 
 app.listen(80, () => {
-  console.log(`express server running at https://picapi.hxq-001.top`);
+  console.log(`express server running at ${SERVER_ADDRESS}`);
 });
 // 200 OK: 请求成功
 // 201 Created: 创建资源成功

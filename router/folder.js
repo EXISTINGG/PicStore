@@ -36,14 +36,14 @@ export const checkPowerMd = async (req,res,next) => {
     
     const [queryRes] = await db.query(querySql,[id,username,path])
 
-    if(queryRes.length > 2) return res.err('出差了,请稍后再试')
+    if(queryRes.length > 2) return res.err('出错了,请稍后再试')
 
     const [userPower,requestPower] = queryRes
     // 当用户的权限(数字)大于所需权限,则代表权限不足
     if(userPower.power > requestPower.power) return res.err('你无权进行此操作',403)
 
   } catch (error) {
-    res.err('出差了,请稍后再试')
+    return res.err('出错了,请稍后再试')
   }
   next();
 }

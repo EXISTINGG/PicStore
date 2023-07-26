@@ -2,7 +2,7 @@ import fs from 'fs/promises';
 import path from 'path'
 import axios from 'axios'
 import {fileTypeFromFile} from 'file-type'
-import NSFW from 'nsfwjs'; // 图片鉴黄
+// import NSFW from 'nsfwjs'; // 图片鉴黄
 import {baseUploadsPath,getAllSubdirectories,getFilesInDirectory} from './folder.js'
 import checkPath from '../utils/checkPath.js'
 import {SERVER_ADDRESS} from '../app.js'

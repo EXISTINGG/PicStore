@@ -5,6 +5,7 @@ import checkPath from '../utils/checkPath.js'
 import {checkFolderExists} from './file.js'
 
 export const baseUploadsPath = './uploads'; // 指定根路径
+const staticFolder = 'uploads'
 
 
 // 获取目录处理
@@ -52,7 +53,7 @@ const getFolderFile = async (req, res) => {
     currentFileIndex = endIndex;
 
     // 增加服务器地址
-    const resultUrl = result.map(item => `${SERVER_ADDRESS}/${folder}/${item}`)
+    const resultUrl = result.map(item => `${SERVER_ADDRESS}/${staticFolder}/${folder}/${item}`)
 
     // 返回数据给前端
     res.send({

@@ -2,7 +2,6 @@ import fs from 'fs/promises';
 import path from 'path'
 import axios from 'axios'
 import {fileTypeFromFile} from 'file-type'
-// import NSFW from 'nsfwjs'; // 图片鉴黄
 import {baseUploadsPath,getAllSubdirectories,getFilesInDirectory} from './folder.js'
 import checkPath from '../utils/checkPath.js'
 import {SERVER_ADDRESS} from '../app.js'
@@ -137,7 +136,7 @@ const deleteFile = async (req,res) => {
   }
 }
 
-// 重命名文件处理(重复文件会覆盖)
+// 重命名文件处理
 const renameFile = async (req,res) => {
   const folder = req.body.folder
   const oldName = req.body.oldName
@@ -166,13 +165,26 @@ const renameFile = async (req,res) => {
   if(oldResultChild || newResultChild) return res.err('非法文件名');
 
   try {
+    // 检查新的文件路径是否已经存在
+    try {
+      await fs.access(newFolderPath);
+      return res.err('文件名已存在');
+    } catch (error) {
+      // 新文件路径不存在，可以继续重命名
+      await fs.rename(oldFolderPath, newFolderPath);
 
-    await fs.rename(oldFolderPath,newFolderPath)
+      res.send({
+        status: 200,
+        message: '重命名成功'
+      });
+    }
 
-    res.send({
-      status: 200,
-      message: '重命名成功'
-    })
+    // await fs.rename(oldFolderPath,newFolderPath)
+
+    // res.send({
+    //   status: 200,
+    //   message: '重命名成功'
+    // })
   } catch (err) {
     res.err('重命名失败');
   }
@@ -219,7 +231,6 @@ const processFiles = async (req,res) => {
   // 检查目录是否存在
   const resultCheck = await checkFolderExists(req.body.folder)
   if(!resultCheck.res) return res.err(resultCheck.msg)
- 
   const fileUrls = JSON.parse(req.body.fileUrls.trim().replace(/[\r\n]+/g, '').replace(/'/g, '"'));
   // const fileUrls = (req.body.fileUrls.replace(/[\n"']/g, '').split(',')); 
   if(fileUrls.length > LIMIT_UNEXPECTED_FILE) return res.err('数量最多为10');

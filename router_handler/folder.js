@@ -53,13 +53,19 @@ const getFolderFile = async (req, res) => {
     currentFileIndex = endIndex;
 
     // 增加服务器地址
-    const resultUrl = result.map(item => `${SERVER_ADDRESS}/${staticFolder}/${folder}/${item}`)
+    // const resultUrl = result.map(item => `${SERVER_ADDRESS}/${staticFolder}/${folder}/${item}`)
+
+    // 增加服务器地址及文件名
+    const filesInfo = result.map((fileName) => ({
+      url: `${SERVER_ADDRESS}/${staticFolder}/${folder}/${fileName}`,
+      imgName: fileName,
+    }));
 
     // 返回数据给前端
     res.send({
       status: 200,
       data: {
-        resultUrl,
+        files: filesInfo,
         folder
       }
     });

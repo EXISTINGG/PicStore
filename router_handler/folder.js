@@ -31,7 +31,7 @@ const getFolderFile = async (req, res) => {
 
   try {
     const pageSize = Number(req.query.size) || 5; // 每页数据量
-    const isRefresh = req.query.refresh === 'true'
+    const isRefresh = req.query.refresh == 'true'
     // 刷新或与第一次的目录不同(防止篡改),都视为第一次请求
     if(isRefresh || firstFolder !== folder) {
       currentFileIndex = 0

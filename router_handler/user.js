@@ -191,7 +191,12 @@ const sendMail = (mailOptions,email,code,res) => {
         console.log(`验证码已发送至${email}`);
         codeMap[email] = code; // 存储验证码，以邮箱为键
         console.log(1, codeMap[email]); // 添加此行，验证验证码是否正确存储
-        res.status(200).send('验证码已发送');
+        // res.status(200).send('验证码已发送');
+        res.send({
+          status: 200,
+          message: '验证码已发送',
+          data: {code}
+        })
       }
     });
 }

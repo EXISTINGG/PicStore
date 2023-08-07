@@ -194,8 +194,7 @@ const sendMail = (mailOptions,email,code,res) => {
         // res.status(200).send('验证码已发送');
         res.send({
           status: 200,
-          message: '验证码已发送',
-          data: {code}
+          message: '验证码已发送'
         })
       }
     });

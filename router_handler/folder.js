@@ -110,7 +110,7 @@ const deleteFolder = async (req,res) => {
 
     res.send({
       status: 200,
-      message: 'ok'
+      message: '删除目录成功'
     })
 
   } catch (error) {

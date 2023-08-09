@@ -75,7 +75,7 @@ app.use((req, res, next) => {
   res.err = (err, status = 400) => {
       res.send({
           status,
-          messgae: err instanceof Error ? err.message : err 
+          message: err instanceof Error ? err.message : err 
       })
   }
   next()

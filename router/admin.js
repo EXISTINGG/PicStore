@@ -18,10 +18,10 @@ const isAdmin = async (req,res,next) => {
     // 执行 SQL 语句成功，但是查询到数据条数不等于 1
     if (queryRes.length !== 1) return res.err('查无此账号')
     // 如果权限既不是1也不是2,则不是管理员
-    if(queryRes[0].power != 1 && queryRes[0].power != 2) return res.err('你无权进行此操作',403)
+    if(queryRes[0].power != 1 && queryRes[0].power != 2) return res.err('权限不足',403)
 
   } catch (error) {
-    return res.err('你无权进行此操作',403)
+    return res.err('权限不足',403)
   }
   next()
 }

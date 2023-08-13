@@ -36,7 +36,7 @@ const uploadFile = async (req,res) => {
         status: 200,
         data: {
           url: resultImg.url,
-          msg: '文件写入成功'
+          message: '文件写入成功'
         }
       });
     } else {

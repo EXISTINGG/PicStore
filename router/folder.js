@@ -40,7 +40,7 @@ export const checkPowerMd = async (req,res,next) => {
 
     const [userPower,requestPower] = queryRes
     // 当用户的权限(数字)大于所需权限,则代表权限不足
-    if(userPower.power > requestPower.power) return res.err('你无权进行此操作',403)
+    if(userPower.power > requestPower.power) return res.err('权限不足',403)
 
   } catch (error) {
     return res.err('出错了,请稍后再试')

@@ -31,6 +31,7 @@ const uploadFile = async (req,res) => {
   const resultFolder = await checkFolderExists(folder)
   if(resultFolder.res) {
     const resultImg = await transferFile(folder,file,timestamp)
+    console.log(resultImg.url);
     if (resultImg.res) {
       res.send({
         status: 200,

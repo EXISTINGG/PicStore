@@ -71,6 +71,8 @@ app.use(cors())
 
 //在路由之前 配置响应数据的中间件
 app.use((req, res, next) => {
+  // 设置响应头,防止中文乱码
+  res.setHeader('Content-Type', 'text/html; charset=UTF-8');
   //err的值,可能是错误对象或描述错误的字符串
   res.err = (err, status = 400) => {
       res.send({

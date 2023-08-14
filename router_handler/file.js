@@ -306,8 +306,10 @@ export const checkFolderExists = async (folder) => {
 // 2写入文件
 const transferFile = async (folder,file,timestamp) => {
   let errUrl
+  console.log('file.originalname',file.originalname);
   // 去除文件名的所有空格
   const filename = file.originalname.replace(/\s/g, "")
+  console.log('filename',filename);
   try {
     await fs.writeFile(`${baseUploadsPath}/${folder}/${timestamp}${filename}`,await fs.readFile(file.path));
 

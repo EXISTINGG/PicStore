@@ -229,6 +229,8 @@ const processFiles = async (req,res) => {
   if(!req.body.folder) return res.err('请指定目录')
   if(!req.body.fileUrls) return res.err('链接为空')
 
+  const timestamp = Date.now(); // 获取当前时间戳 
+
   // 检查目录是否存在
   const resultCheck = await checkFolderExists(req.body.folder)
   if(!resultCheck.res) return res.err(resultCheck.msg)
@@ -252,7 +254,7 @@ const processFiles = async (req,res) => {
       }
     
       // 写入目录,重复文件时,覆盖文件
-      await fs.writeFile(`${baseUploadsPath}/${req.body.folder}/${resultAxios.imageName}`,resultAxios.imageData)
+      await fs.writeFile(`${baseUploadsPath}/${req.body.folder}/${timestamp}/${resultAxios.imageName}`,resultAxios.imageData)
       // 检测文件的类型
       const resultType = await detectedType(req.body.folder,resultAxios.imageName,fileUrl)
       // 非图片类型
@@ -261,7 +263,7 @@ const processFiles = async (req,res) => {
         continue;
       }
 
-      const fileAddress = `${SERVER_ADDRESS}/${staticFolder}/${req.body.folder}/${resultAxios.imageName}`;
+      const fileAddress = `${SERVER_ADDRESS}/${staticFolder}/${req.body.folder}/${timestamp}/${resultAxios.imageName}`;
       fileAddresses.push(fileAddress);
     }
     if(failedFiles.length === 0) {

@@ -254,16 +254,16 @@ const processFiles = async (req,res) => {
       }
     
       // 写入目录,重复文件时,覆盖文件
-      await fs.writeFile(`${baseUploadsPath}/${req.body.folder}/${timestamp}/${resultAxios.imageName}`,resultAxios.imageData)
+      await fs.writeFile(`${baseUploadsPath}/${req.body.folder}/${timestamp}${resultAxios.imageName}`,resultAxios.imageData)
       // 检测文件的类型
-      const resultType = await detectedType(req.body.folder,resultAxios.imageName,fileUrl)
+      const resultType = await detectedType(req.body.folder,`${timestamp}${resultAxios.imageName}`,fileUrl)
       // 非图片类型
       if(!resultType.isImg) {
         failedFiles.push(resultType.url);
         continue;
       }
 
-      const fileAddress = `${SERVER_ADDRESS}/${staticFolder}/${req.body.folder}/${timestamp}/${resultAxios.imageName}`;
+      const fileAddress = `${SERVER_ADDRESS}/${staticFolder}/${req.body.folder}/${timestamp}${resultAxios.imageName}`;
       fileAddresses.push(fileAddress);
     }
     if(failedFiles.length === 0) {

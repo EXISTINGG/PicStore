@@ -232,9 +232,11 @@ const processFiles = async (req,res) => {
   // 检查目录是否存在
   const resultCheck = await checkFolderExists(req.body.folder)
   if(!resultCheck.res) return res.err(resultCheck.msg)
+  console.log('req.body.fileUrls',req.body.fileUrls);
   const fileUrls = JSON.parse(req.body.fileUrls.trim().replace(/[\r\n]+/g, '').replace(/'/g, '"'));
+  console.log('fileUrls',fileUrls);
   // const fileUrls = (req.body.fileUrls.replace(/[\n"']/g, '').split(',')); 
-  if(fileUrls.length > LIMIT_UNEXPECTED_FILE) return res.err('数量最多为10');
+  if(fileUrls.length > LIMIT_UNEXPECTED_FILE) return res.err(`数量最多为${LIMIT_UNEXPECTED_FILE}`);
   // 定义一个数组来存储上传失败的文件名
   const failedFiles = [];
   const fileAddresses = [];

@@ -11,14 +11,31 @@ const updateUserinfo = async (req,res) => {
   // req 对象上的 auth 属性，是 Token 解析成功，express-jwt 中间件帮我们挂载上去的
   let {username, id} = req.auth
   // 用户更新信息后，token中还是以前的信息，如果再次更改，使用body中的username
-  username = req.body.username || username;
+  // username = req.body.username || username;
   try {
+    const querySql = 'select * from user where id= ? and username = ?'
+
     const changenameSql = 'update user set ? where id = ? and username = ?'
     const [changenameRes] = await db.query(changenameSql,[req.body, id, username])
     if(changenameRes.affectedRows !== 1) res.err('更新信息失败')
+
+    // 查询新的信息
+    const [updateQueryRes] = await db.query(querySql,[id,username])
+
+    // 快速剔除 密码(敏感信息)
+    delete updateQueryRes[0].password
+    const user = updateQueryRes[0]
+
+    // 生成 Token 字符串
+    const tokenStr = jwt.sign(user, jwtSecretKey, {expiresIn})
+
     res.send({
       status: 200,
       message: '更新信息成功',
+      data: {
+        user,
+        token: `Bearer ${tokenStr}`
+      }
     })
   } catch (error) {
     res.err('更新信息失败')

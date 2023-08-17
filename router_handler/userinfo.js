@@ -22,7 +22,7 @@ const updateUserinfo = async (req,res) => {
     if(changenameRes.affectedRows !== 1) return res.err('更新信息失败')
 
     // 查询新的信息
-    const [updateQueryRes] = await db.query(querySql,[id,username])
+    const [updateQueryRes] = await db.query(querySql,[id,req.body.username])
 
     // 快速剔除 密码(敏感信息)
     delete updateQueryRes[0].password

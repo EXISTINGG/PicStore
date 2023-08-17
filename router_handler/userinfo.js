@@ -10,7 +10,7 @@ const expiresIn = process.env.TOKEN_EXPIRESIN
 const updateUserinfo = async (req,res) => {
   // req 对象上的 auth 属性，是 Token 解析成功，express-jwt 中间件帮我们挂载上去的
   let {username, id} = req.auth
-  console.log(req.body);
+  console.log(req.body,username, id);
   // 用户更新信息后，token中还是以前的信息，如果再次更改，使用body中的username
   // username = req.body.username || username;
   try {

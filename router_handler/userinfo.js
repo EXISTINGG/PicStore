@@ -39,6 +39,7 @@ const updateUserinfo = async (req,res) => {
       }
     })
   } catch (error) {
+    console.log(error);
     res.err('更新信息失败')
   }
 }

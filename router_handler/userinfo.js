@@ -10,18 +10,21 @@ const expiresIn = process.env.TOKEN_EXPIRESIN
 const updateUserinfo = async (req,res) => {
   // req 对象上的 auth 属性，是 Token 解析成功，express-jwt 中间件帮我们挂载上去的
   let {username, id} = req.auth
-  console.log(req.body,username, id);
-  // 用户更新信息后，token中还是以前的信息，如果再次更改，使用body中的username
-  // username = req.body.username || username;
-  try {
-    const querySql = 'select * from user where id= ? and username = ?'
 
+  try {
+    // 用户名是否存在
+    const queryName = 'select * from user where username = ?'
+    const [queryRes] = await db.query(queryName,[req.body,username])
+    if(queryRes.length > 0) return res.err('更新信息失败:用户名已被注册')
+    // 
     const changenameSql = 'update user set ? where id = ? and username = ?'
+
+    const querySql = 'select * from user where id= ? and username = ?'
     const [changenameRes] = await db.query(changenameSql,[req.body, id, username])
-    console.log(changenameRes,'hangenameRes.affectedRows:',changenameRes.affectedRows !== 1);
+    
     if(changenameRes.affectedRows !== 1) return res.err('更新信息失败')
 
-    // 查询新的信息
+    // 查询新的信息,注意此时使用的是新的信息
     const [updateQueryRes] = await db.query(querySql,[id,req.body.username])
 
     // 快速剔除 密码(敏感信息)

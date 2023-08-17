@@ -18,6 +18,7 @@ const updateUserinfo = async (req,res) => {
 
     const changenameSql = 'update user set ? where id = ? and username = ?'
     const [changenameRes] = await db.query(changenameSql,[req.body, id, username])
+    console.log(changenameRes,'hangenameRes.affectedRows:',changenameRes.affectedRows !== 1);
     if(changenameRes.affectedRows !== 1) return res.err('更新信息失败')
 
     // 查询新的信息

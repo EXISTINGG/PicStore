@@ -12,16 +12,17 @@ const updateUserinfo = async (req,res) => {
   let {username, id} = req.auth
 
   try {
+    console.log(req.body.username);
     // 用户名是否存在
-    const queryName = 'select * from user where username = ?'
-    const [queryRes] = await db.query(queryName,[req.body,username])
+    const queryName = 'select username from user where username = ?'
+    const [queryRes] = await db.query(queryName,req.body.username)
     if(queryRes.length > 0) return res.err('更新信息失败:用户名已被注册')
     // 
+    const querySql = 'select * from user where id= ? and username = ?'
+
     const changenameSql = 'update user set ? where id = ? and username = ?'
 
-    const querySql = 'select * from user where id= ? and username = ?'
     const [changenameRes] = await db.query(changenameSql,[req.body, id, username])
-    
     if(changenameRes.affectedRows !== 1) return res.err('更新信息失败')
 
     // 查询新的信息,注意此时使用的是新的信息

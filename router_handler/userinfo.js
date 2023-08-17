@@ -10,6 +10,7 @@ const expiresIn = process.env.TOKEN_EXPIRESIN
 const updateUserinfo = async (req,res) => {
   // req 对象上的 auth 属性，是 Token 解析成功，express-jwt 中间件帮我们挂载上去的
   let {username, id} = req.auth
+  console.log(req.body);
   // 用户更新信息后，token中还是以前的信息，如果再次更改，使用body中的username
   // username = req.body.username || username;
   try {
@@ -17,7 +18,7 @@ const updateUserinfo = async (req,res) => {
 
     const changenameSql = 'update user set ? where id = ? and username = ?'
     const [changenameRes] = await db.query(changenameSql,[req.body, id, username])
-    if(changenameRes.affectedRows !== 1) res.err('更新信息失败')
+    if(changenameRes.affectedRows !== 1) return res.err('更新信息失败')
 
     // 查询新的信息
     const [updateQueryRes] = await db.query(querySql,[id,username])

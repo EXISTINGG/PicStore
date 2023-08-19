@@ -89,8 +89,8 @@ const restoreUser = async (req,res) => {
   try {   
       const updateSql = 'update user set status = "1" where id= ? and username = ? and status = "0"'
       const updateRes = await db.query(updateSql, [id,delUserName]);
-      console.log('updateRes',updateRes,updateRes.affectedRows);
-    if(updateRes.affectedRows !== 1) return res.err('恢复账号失败')
+      console.log('updateRes',updateRes[0],updateRes[0].affectedRows);
+    if(updateRes[0].affectedRows !== 1) return res.err('恢复账号失败')
 
     res.send({
       status: 200,

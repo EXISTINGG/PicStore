@@ -135,7 +135,7 @@ const deleteUser = async (req,res) => {
 // 注销账号2,此接口更改用户状态，不删除用户
 const updateUserStatus = async (req,res) => {
   let {username, id } = req.auth
-  username = req.body.username || username;
+  // username = req.body.username || username;
   
   if(!username) return res.err('请输入用户名')
 

@@ -6,7 +6,7 @@ import userHandle from '../router_handler/user.js'
 
 const router = new express.Router()
 
-// 检查用户是否注销中间件
+// 检查用户是否注销中间件,或有无此账号
 export const checkStatus = async (req,res, next) => {
   const {username, email} = req.body
   if(!username && !email) return res.err('请输入用户名或邮箱')

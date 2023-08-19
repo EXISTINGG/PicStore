@@ -89,7 +89,7 @@ const loginAccount = async (req,res) => {
       const power = Number(queryRes[0].power)
       // 如果权限不等于1或2，则不是管理员
       if(power !== 1 && power !== 2) {
-        return res.err('你无权进行此操作',403)
+        return res.err('权限不足',403)
       }
     }
 

@@ -59,7 +59,8 @@ const deleteSignOutUser = async (req,res) => {
 const updatePower = async (req,res) => {
   const {username,id} = req.auth
   const {setPower,setUserName, setId} = req.body
-  if(!setPower || setPower == 1) return res.err('请选择要更改的权限等级')
+  if(!setPower) return res.err('请选择要更改的权限等级')
+  // if(setPower == 1) return res.err('')
   if(!setUserName) return res.err('请选择用户')
   if(!setId) return res.err('缺少用户ID')
 
@@ -67,7 +68,7 @@ const updatePower = async (req,res) => {
     const querySql = 'select power from user where username = ? and id = ?'
     const [queryRes] = await db.query(querySql,[username,id])
     // 如果不是超级管理员
-    if(queryRes[0].power != 1) return res.err('你无权进行此操作',403)
+    if(queryRes[0].power != 1) return res.err('权限不足',403)
     // 
     if(queryRes[0].power == 1 && setPower != 1) return res.err('超级管理员不可降级',403)
 

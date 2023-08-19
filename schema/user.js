@@ -73,8 +73,16 @@ export const updatepower_schema = {
 // 更改所需权限
 export const changeinterface_schema = {
   body: {
-    id: Joi.string().max(1).required(),
+    id: Joi.string().required(),
     setPower: Joi.string().max(1).required(),
     interfaceName: Joi.string().required()
+  }
+}
+
+// 删除注销的某个用户
+export const deleteuser_schema = {
+  body: {
+    id: Joi.string().required(),
+    delUserName: username,
   }
 }

@@ -1,7 +1,7 @@
 import express from 'express';
 import db from '../db/index.js'
 import expressJoi from '@escook/express-joi' // 验证数据的中间件
-import {updatepower_schema, changeinterface_schema} from '../schema/user.js' // 验证规则
+import {updatepower_schema, changeinterface_schema,deleteuser_schema} from '../schema/user.js' // 验证规则
 import adminHandle from '../router_handler/admin.js'
 
 const router = new express.Router()
@@ -32,5 +32,6 @@ router.get('/deletesignoutuser',isAdmin, adminHandle.deleteSignOutUser)
 router.post('/updatepower',expressJoi(updatepower_schema), isAdmin, adminHandle.updatePower)
 router.get('/getinterface',isAdmin, adminHandle.getInterface)
 router.post('/changeinterface',expressJoi(changeinterface_schema), isAdmin, adminHandle.changeInterfacePower)
+router.post('/deleteuser',expressJoi(deleteuser_schema), isAdmin, adminHandle.deleteUser)
 
 export default router

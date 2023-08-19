@@ -55,6 +55,30 @@ const deleteSignOutUser = async (req,res) => {
   }
 }
 
+// 删除注销账号的某个用户
+const deleteUser = async (req,res) => {
+  const {delUserName, id} = req.body
+  
+  if(!id) return res.err('请输入ID')
+  if(!delUserName) return res.err('请输入用户名')
+
+  try {   
+      const deleteByNammeSql = 'delete from user where id= ? and username = ? and status = "0"'
+      const deleteRes = await db.query(deleteByNammeSql, [id,delUserName]);
+    
+    if(deleteRes[0].affectedRows !== 1) return res.err('删除账号失败')
+
+    res.send({
+      status: 200,
+      message: '删除账号成功'
+    })
+
+  } catch (error) {
+    res.err('删除账号失败')
+    console.log(error);
+  }
+}
+
 // 更改权限(仅超级管理员可以更改)
 const updatePower = async (req,res) => {
   const {username,id} = req.auth
@@ -144,5 +168,6 @@ export default {
   deleteSignOutUser,
   updatePower,
   getInterface,
-  changeInterfacePower
+  changeInterfacePower,
+  deleteUser
 }

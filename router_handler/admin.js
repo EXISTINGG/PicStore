@@ -79,6 +79,30 @@ const deleteUser = async (req,res) => {
   }
 }
 
+// 恢复注销账号的某个用户
+const restoreUser = async (req,res) => {
+  const {delUserName, id} = req.body
+  
+  if(!id) return res.err('请输入ID')
+  if(!delUserName) return res.err('请输入用户名')
+
+  try {   
+      const deleteByNammeSql = 'update user set status = "1" where id= ? and username = ? and status = "0"'
+      const updateRes = await db.query(deleteByNammeSql, [id,delUserName]);
+    
+    if(updateRes.affectedRows !== 1) return res.err('恢复账号失败')
+
+    res.send({
+      status: 200,
+      message: '恢复账号成功'
+    })
+
+  } catch (error) {
+    res.err('恢复账号失败')
+    console.log(error);
+  }
+}
+
 // 更改权限(仅超级管理员可以更改)
 const updatePower = async (req,res) => {
   const {username,id} = req.auth
@@ -89,12 +113,12 @@ const updatePower = async (req,res) => {
   if(!setId) return res.err('缺少用户ID')
 
   try {
-    const querySql = 'select power from user where username = ? and id = ?'
+    const querySql = 'select power,username from user where username = ? and id = ?'
     const [queryRes] = await db.query(querySql,[username,id])
     // 如果不是超级管理员
     if(queryRes[0].power != 1) return res.err('权限不足',403)
-    // 
-    if(queryRes[0].power == 1 && setPower != 1) return res.err('超级管理员不可降级',403)
+    // 如果权限等于1,且发起改动人的username等于setUserName,且降级,不继续操作(超级管理员自降权限)
+    if(queryRes[0].power == 1 && queryRes[0].username == setUserName && setPower != 1) return res.err('超级管理员不可降级',403)
 
     const setPowerSql = 'update user set power = ? where username = ? and id = ?'
     const [setPowerRes] = await db.query(setPowerSql,[setPower,setUserName,setId])
@@ -169,5 +193,6 @@ export default {
   updatePower,
   getInterface,
   changeInterfacePower,
-  deleteUser
+  deleteUser,
+  restoreUser
 }

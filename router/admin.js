@@ -33,5 +33,6 @@ router.post('/updatepower',expressJoi(updatepower_schema), isAdmin, adminHandle.
 router.get('/getinterface',isAdmin, adminHandle.getInterface)
 router.post('/changeinterface',expressJoi(changeinterface_schema), isAdmin, adminHandle.changeInterfacePower)
 router.post('/deleteuser',expressJoi(deleteuser_schema), isAdmin, adminHandle.deleteUser)
+router.post('/restoreuser',expressJoi(deleteuser_schema), isAdmin, adminHandle.restoreUser)
 
 export default router

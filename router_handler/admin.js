@@ -87,9 +87,9 @@ const restoreUser = async (req,res) => {
   if(!delUserName) return res.err('请输入用户名')
 
   try {   
-      const deleteByNammeSql = 'update user set status = "1" where id= ? and username = ? and status = "0"'
-      const updateRes = await db.query(deleteByNammeSql, [id,delUserName]);
-    
+      const updateSql = 'update user set status = "1" where id= ? and username = ? and status = "0"'
+      const updateRes = await db.query(updateSql, [id,delUserName]);
+      console.log(updateRes.affectedRows);
     if(updateRes.affectedRows !== 1) return res.err('恢复账号失败')
 
     res.send({

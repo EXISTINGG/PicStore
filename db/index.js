@@ -15,12 +15,7 @@ const pool = mysql.createPool({
   database
 })
 
-// const pool = mysql.createPool({
-//   host: 'cdf5f55b2ac9.c.methodot.com',
-//   port: 30405, // port: 数据库端口,默认 3306
-//   user: 'root',
-//   password: 'Existing',
-//   database: 'picstore'
-// })
+console.log('host',host);
+console.log('port',port);
 
 export default pool.promise()

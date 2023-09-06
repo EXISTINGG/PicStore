@@ -59,6 +59,7 @@ const getFolderFile = async (req, res) => {
     const filesInfo = result.map((fileName) => ({
       url: `${SERVER_ADDRESS}/${staticFolder}/${folder}/${fileName}`,
       imgName: fileName,
+      id: `${SERVER_ADDRESS}/${staticFolder}/${folder}/${fileName}`
     }));
 
     // 返回数据给前端

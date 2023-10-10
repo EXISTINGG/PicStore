@@ -128,7 +128,8 @@ async function saveImageToStorage(buffer,size, mimetype, filename, albumInfo, us
       const resData = await client.send(new PutObjectCommand(params))
       if (resData.$metadata.httpStatusCode !== 200) return res.err('上传出错O_o', 500);
 
-      const url = `${CloudflareDNS}/${filename}` || `${AWS_ENDPOINT_URL}/${AWS_BUCKET}/${filename}`;
+      // const url = `${CloudflareDNS}/${filename}` || `${AWS_ENDPOINT_URL}/${AWS_BUCKET}/${filename}`;
+      const url = `${AWS_ENDPOINT_URL}/${AWS_BUCKET}/${filename}`;
 
       insertData.file_url = url;
       insertData.version_id = resData.VersionId;

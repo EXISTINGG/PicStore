@@ -13,6 +13,8 @@ export const AWS_BUCKET = process.env.AWS_BUCKET;
 const AWS_ENDPOINT_URL = process.env.AWS_ENDPOINT_URL;
 // 获取AWS区域
 const AWS_REGION = process.env.AWS_REGION;
+// 获取CloudflareDNS地址
+const CloudflareDNS = process.env.CloudflareDNS || '';
 
 // 创建S3客户端
 // 传入AWS端点URL和区域
@@ -126,7 +128,8 @@ async function saveImageToStorage(buffer,size, mimetype, filename, albumInfo, us
       const resData = await client.send(new PutObjectCommand(params))
       if (resData.$metadata.httpStatusCode !== 200) return res.err('上传出错O_o', 500);
 
-      const url = `${AWS_ENDPOINT_URL}/${AWS_BUCKET}/${filename}`;
+      const url = `${CloudflareDNS}/${filename}` || `${AWS_ENDPOINT_URL}/${AWS_BUCKET}/${filename}`;
+      
       insertData.file_url = url;
       insertData.version_id = resData.VersionId;
 

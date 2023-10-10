@@ -9,13 +9,10 @@ const database = process.env.DB_DATABASE;
 
 const pool = mysql.createPool({
   host,
-  port, // port: 数据库端口,默认 3306
+  port,
   user,
   password,
   database
 })
-
-console.log('host',host);
-console.log('port',port);
 
 export default pool.promise()

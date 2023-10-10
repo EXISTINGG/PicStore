@@ -431,8 +431,6 @@ const detectedType = async (folder,file,url) => {
   }
 }
 
-
-
 export default {
   uploadFile,
   uploadFiles,

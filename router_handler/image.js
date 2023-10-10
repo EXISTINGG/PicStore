@@ -129,7 +129,7 @@ async function saveImageToStorage(buffer,size, mimetype, filename, albumInfo, us
       if (resData.$metadata.httpStatusCode !== 200) return res.err('上传出错O_o', 500);
 
       const url = `${CloudflareDNS}/${filename}` || `${AWS_ENDPOINT_URL}/${AWS_BUCKET}/${filename}`;
-      
+
       insertData.file_url = url;
       insertData.version_id = resData.VersionId;
 
@@ -160,22 +160,22 @@ async function saveImageToStorage(buffer,size, mimetype, filename, albumInfo, us
 const saveImage = async (req, res) => {
   if (!req.file) return res.err('没有文件');
 
-  const { originalname, buffer, size, mimetype } = req.file;
-  const { id, album_name } = req.body;
+  const {  buffer, size, mimetype } = req.file;
+  const { id, album_name, filename } = req.body;
   const { username, permissions } = req.auth;
   const currentTime = Date.now();
 
   if (!id || !album_name || !username || !permissions) return res.err('参数错误');
 
-  const filename = `${currentTime}${decodeURIComponent(originalname.replace(/\s/g, ''))}`;
+  const decodeFilename = `${currentTime}${decodeURIComponent(filename).replace(/\s/g, '')}`;
 
-  console.log(filename, currentTime, username, album_name);
+  console.log(decodeFilename, currentTime, username, album_name);
 
   const queryRes = await queryAlbumNameByID(id, album_name);
   if (queryRes.length === 0) return res.err('未匹配到相册');
 
   if (await checkPermissionAndFileType(queryRes[0], buffer, username, permissions, res)) {
-    const saveRes = await saveImageToStorage(buffer, size, mimetype, filename, queryRes[0], username,currentTime, res)
+    const saveRes = await saveImageToStorage(buffer, size, mimetype, decodeFilename, queryRes[0], username,currentTime, res)
     if (saveRes.isSuccess) {
       res.send({ status: 200, message: '上传成功', data: saveRes.insertData });
     }
@@ -195,7 +195,7 @@ const saveNetImage = async (req, res) => {
     const size = response.headers['content-length'];
     const mimetype = response.headers['content-type'];
     const buffer = response.data;
-    const filename = `${currentTime}${decodeURIComponent(path.basename(imgUrl).replace(/\s/g, ''))}`;
+    const filename = `${currentTime}${decodeURIComponent(path.basename(imgUrl)).replace(/\s/g, '')}`;
 
     console.log(filename, currentTime, username, album_name);
 

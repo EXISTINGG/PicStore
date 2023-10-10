@@ -418,11 +418,12 @@ const deleteImage = async (req, res) => {
     // 获取图片
     const querySql = `SELECT * FROM images WHERE id = ? AND name = ?`;
     const [queryRes] = await db.query(querySql, [id,name]);
-    console.log(queryRes);
+    
     if(queryRes.length !== 1) return res.err('未找到图片');
-
+    
     // 验证权限
-    const hasPermission = checkAlbumPermission(queryRes[0].uploader, username, permissions)
+    const hasPermission = await checkAlbumPermission(queryRes[0].uploader, username, permissions)
+    
     if (!hasPermission) return res.err('无权删除此图片');
 
     const deleteSql = `DELETE FROM images WHERE id = ? AND name = ?`;

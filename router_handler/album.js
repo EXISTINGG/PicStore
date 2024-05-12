@@ -80,6 +80,7 @@ const createAlbum = async (req, res) => {
     name: albumName,
     creator: username,
     privacy,
+    file_count: 0,
     storage_location: req.storageType
   }
 
@@ -131,6 +132,13 @@ const updateAlbum = async (req, res) => {
   const updateSql = 'UPDATE albums SET ? WHERE id = ? AND name = ?';
   const updateData = [updateParams, id, albumName];
   try {
+    // 如果更新隐私性，相册内图片也更新隐私性
+    if (newPrivacy !== queryRes[0].privacy) {
+      const updateImgSql = 'UPDATE images SET privacy = ? WHERE album_name = ?';
+      const updateImgData = [newPrivacy, albumName];
+      await db.query(updateImgSql, updateImgData);
+    }
+    // 更新相册信息
     const [updateSqlRes] = await db.query(updateSql, updateData);
     if (updateSqlRes.affectedRows !== 1) return res.err('更新相册失败');
     res.send({ status: 200, message: '更新相册成功' });

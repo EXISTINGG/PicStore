@@ -477,9 +477,10 @@ const getImage = async (req, res) => {
 
     // 检查相册是否存在
     const queryRes = await queryAlbumNameByID(albumId,name);
-    
     if(queryRes.length === 0) return res.err('该相册不存在');
     
+    console.log(11,queryRes);
+
     // 私人相册
     if(queryRes[0].privacy == 1) {
       // 没有登录
@@ -495,7 +496,7 @@ const getImage = async (req, res) => {
     // const [queryImgRes] = await db.query(querySql, [name]);
     const querySql = 'SELECT * FROM images WHERE album_name = ? LIMIT ?, ?';
     const [queryImgRes] = await db.query(querySql, [name, offset, batchSize]);
-
+    console.log(11111,queryImgRes);
     // 没有图片
     if(queryImgRes.length === 0) return res.send({status: 200,message: '没有更多了', count: 0, nextOffset: offset, data: []});
 
